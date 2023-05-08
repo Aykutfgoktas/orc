@@ -15,7 +15,7 @@ This is a Command Line Interface (CLI) application written in Golang that allows
 Before using this application, you need to have Golang installed on your system. You also need to have a GitHub account and generate an access token from your account settings.
 
 ```sh
-go install github.com/Aykutfgoktas/orc@latest
+go install github.com/Aykutfgoktas/orc
 ```
 
 ## Usage
