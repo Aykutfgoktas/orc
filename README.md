@@ -4,6 +4,8 @@
 [![lint-img]][lint-url]
 [![version-img]][version-url]
 
+![alt text](./orc.png)
+
 ## Introduction
 
 This is a Command Line Interface (CLI) application written in Golang that allows users to clone repositories from a specified organization on GitHub. Additionally, the application can list the organizations that the user has entered and list the repositories of the selected organization.
