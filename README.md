@@ -2,6 +2,7 @@
 
 [![test-img]][test-url]
 [![lint-img]][lint-url]
+[![version-img]][version-url]
 
 ## Introduction
 
@@ -69,3 +70,5 @@ In the future, I plan to continue refining the tool and adding new features, suc
 [test-url]: https://github.com/Aykutfgoktas/orc/workflows/go-test/badge.svg
 [lint-img]: https://github.com/Aykutfgoktas/orc/workflows/golangci-lint/badge.svg
 [lint-url]: https://github.com/Aykutfgoktas/orc/workflows/golangci-lint/badge.svg
+[version-img]: https://img.shields.io/github/v/release/Aykutfgoktas/orc
+[version-url]: https://github.com/Aykutfgoktas/orc/releases
