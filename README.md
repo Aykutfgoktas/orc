@@ -1,5 +1,8 @@
 # ORC - Organization Repo Cloner
 
+[![test-img]][test-url]
+[![lint-img]][lint-url]
+
 ## Introduction
 
 This is a Command Line Interface (CLI) application written in Golang that allows users to clone repositories from a specified organization on GitHub. Additionally, the application can list the organizations that the user has entered and list the repositories of the selected organization.
@@ -29,7 +32,7 @@ Configuration will be stored in `$HOME/.orc.conf.json` file.
 - Install [golangci-lint](https://github.com/golangci/golangci-lint)
 
 - You can run golang-lint local environment before committing the code.
-- It will read the rules from the [.golangci.yml](https://github.com/Aykutfgoktas/orc/.golangci.yml) file.
+- It will read the rules from the [.golangci.yml](https://github.com/Aykutfgoktas/orc/blob/master/.golangci.yml) file.
 
 ```sh
   make lint
@@ -61,3 +64,8 @@ To address this problem, I decided to create a command-line interface (CLI) tool
 To be honest, I do not know if there are some other applications that solve the same problem. However, I just want to create my own to solve my problem and any feedback will be appreciated thank you.
 
 In the future, I plan to continue refining the tool and adding new features, such as support for other version control systems and integration with code review tools. I also hope to share the tool with other developers and contribute to the open-source community.
+
+[test-img]: https://github.com/Aykutfgoktas/orc/workflows/go-test/badge.svg
+[test-url]: https://github.com/Aykutfgoktas/orc/workflows/go-test/badge.svg
+[lint-img]: https://github.com/Aykutfgoktas/orc/workflows/golangci-lint/badge.svg
+[lint-url]: https://github.com/Aykutfgoktas/orc/workflows/golangci-lint/badge.svg
