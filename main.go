@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"orc/cmd"
+
+	"github.com/Aykutfgoktas/orc/cmd"
 )
 
 func main() {

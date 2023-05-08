@@ -5,9 +5,9 @@
 package mocks
 
 import (
-	cfile "orc/cfile"
 	reflect "reflect"
 
+	cfile "github.com/Aykutfgoktas/orc/cfile"
 	gomock "github.com/golang/mock/gomock"
 )
 

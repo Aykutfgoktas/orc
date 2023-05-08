@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-	"orc/cfile"
-	"orc/client"
-	"orc/config"
-	"orc/utils"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/Aykutfgoktas/orc/cfile"
+	"github.com/Aykutfgoktas/orc/client"
+	"github.com/Aykutfgoktas/orc/config"
+	"github.com/Aykutfgoktas/orc/utils"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/briandowns/spinner"

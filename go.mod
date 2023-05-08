@@ -1,4 +1,4 @@
-module orc
+module github.com/Aykutfgoktas/orc
 
 go 1.19
 

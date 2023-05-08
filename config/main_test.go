@@ -3,7 +3,8 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	"orc/cfile/mocks"
+
+	"github.com/Aykutfgoktas/orc/cfile/mocks"
 
 	"testing"
 

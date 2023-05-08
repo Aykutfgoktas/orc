@@ -3,7 +3,8 @@ package config
 import (
 	"errors"
 	"fmt"
-	"orc/cfile"
+
+	"github.com/Aykutfgoktas/orc/cfile"
 )
 
 type Service interface {
