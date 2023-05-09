@@ -1,10 +1,10 @@
 .PHONY: build
 build:
-	go build -o command main.go
+	go build -o orc main.go
 
 .PHONY: run
 run: build
-	./command
+	./orc
 
 .PHONY: mock
 mock: 
