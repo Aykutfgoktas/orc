@@ -22,6 +22,7 @@ import (
 var set bool
 var list bool
 var add string
+var remove bool
 
 var s *spinner.Spinner
 var conf config.Config
@@ -44,6 +45,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVarP(&add, "add", "a", "", "add organization")
 	RootCmd.PersistentFlags().BoolVarP(&list, "list", "l", false, "list organizations")
 	RootCmd.PersistentFlags().BoolVarP(&set, "set", "s", false, "set default organization")
+	RootCmd.PersistentFlags().BoolVarP(&remove, "remove", "r", false, "remove organization")
 
 	s = spinner.New(spinner.CharSets[spinnerChoice], spinnerDuration)
 	home, _ := os.UserHomeDir()
@@ -89,6 +91,11 @@ var RootCmd = &cobra.Command{
 
 		if set {
 			setDefaultOrganization()
+			return nil
+		}
+
+		if remove {
+			deleteOrganization()
 			return nil
 		}
 
@@ -206,5 +213,26 @@ func listRepo(org string) {
 		fmt.Printf("Error while cloning the repo %s, error: %v \n", repo.Name, err)
 	} else {
 		fmt.Printf("Repository successfully cloned %s \n", repo.Name)
+	}
+}
+
+func deleteOrganization() {
+	var org string
+
+	prompt := &survey.Select{
+		Message: "Select a organization to delete:",
+		Options: conf.Organizations,
+	}
+
+	if err := survey.AskOne(prompt, &org, survey.WithPageSize(pageSize)); err != nil {
+		log.Fatal("Error selecting organization:", "error", err)
+	}
+
+	err := confService.DeleteOrganization(org)
+
+	if err != nil {
+		fmt.Printf("Error while deleting the organization %s, error: %v \n", org, err)
+	} else {
+		fmt.Printf("Organization successfully deleted %s \n", org)
 	}
 }

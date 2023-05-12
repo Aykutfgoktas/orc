@@ -27,6 +27,7 @@ var _ = Describe("Config service", func() {
 		ctrl              *gomock.Controller
 		conf              Config
 		org               string
+		orgThatNotExist   string
 		errMsg            error
 	)
 
@@ -39,6 +40,7 @@ var _ = Describe("Config service", func() {
 		errMsg = errors.New(gofakeit.Error().Error())
 		org = gofakeit.Company()
 		organization := gofakeit.Company()
+		orgThatNotExist = gofakeit.Company()
 		conf = Config{
 			APIKey:              gofakeit.Word(),
 			DefaultOrganization: organization,
@@ -281,7 +283,7 @@ var _ = Describe("Config service", func() {
 
 			configFileService.EXPECT().Reader().Times(1).Return(readerMock, nil)
 
-			conf.Organizations = append(conf.Organizations, org)
+			conf.Organizations.Add(org)
 
 			configFileService.EXPECT().Writer(conf).Times(1).Return("", errMsg)
 
@@ -307,7 +309,7 @@ var _ = Describe("Config service", func() {
 
 			configFileService.EXPECT().Reader().Times(1).Return(readerMock, nil)
 
-			conf.Organizations = append(conf.Organizations, org)
+			conf.Organizations.Add(org)
 
 			configFileService.EXPECT().Writer(conf).Times(1).Return("", nil)
 
@@ -340,5 +342,161 @@ var _ = Describe("Config service", func() {
 			Expect(result).To(Equal(true))
 		})
 
+	})
+
+	Describe("DeleteOrganization", func() {
+
+		It("should return the reader error", func() {
+			readerError := readerError(errMsg)
+
+			configFileService.EXPECT().Reader().Times(1).Return(readerMock, errMsg)
+
+			err := configService.DeleteOrganization(org)
+
+			Expect(err).To(Equal(readerError))
+		})
+
+		It("should return the decode error", func() {
+			conff := Config{}
+
+			decodeError := decodeError(errMsg)
+
+			readerMock.EXPECT().Decode(&conff).Times(1).Return(errMsg)
+
+			configFileService.EXPECT().Reader().Times(1).Return(readerMock, nil)
+
+			err := configService.DeleteOrganization(org)
+
+			Expect(err).To(Equal(decodeError))
+		})
+
+		It("should return the writer error", func() {
+			conff := Config{}
+
+			b, _ := json.Marshal(conf)
+
+			writerError := writerError(errMsg)
+
+			readerMock.EXPECT().Decode(&conff).Times(1).Do(func(d interface{}) error {
+				err := json.Unmarshal(b, d)
+
+				if err != nil {
+					return err
+				}
+
+				return nil
+			})
+
+			configFileService.EXPECT().Reader().Times(1).Return(readerMock, nil)
+
+			removeOrg := conf.Organizations[0]
+			conf.Organizations.Remove(removeOrg)
+
+			configFileService.EXPECT().Writer(conf).Times(1).Return("", errMsg)
+
+			err := configService.DeleteOrganization(removeOrg)
+
+			Expect(err).To(Equal(writerError))
+
+		})
+
+		It("should remove organization that does not exist", func() {
+			conff := Config{}
+
+			b, _ := json.Marshal(conf)
+
+			readerMock.EXPECT().Decode(&conff).Times(1).Do(func(d interface{}) error {
+				err := json.Unmarshal(b, d)
+
+				if err != nil {
+					return err
+				}
+
+				return nil
+			})
+
+			configFileService.EXPECT().Reader().Times(1).Return(readerMock, nil)
+
+			configFileService.EXPECT().Writer(conf).Times(1).Return("", nil)
+
+			err := configService.DeleteOrganization(orgThatNotExist)
+
+			Expect(err).To(BeNil())
+
+		})
+
+		It("should remove organization that exist", func() {
+			conff := Config{}
+
+			b, _ := json.Marshal(conf)
+
+			readerMock.EXPECT().Decode(&conff).Times(1).Do(func(d interface{}) error {
+				err := json.Unmarshal(b, d)
+
+				if err != nil {
+					return err
+				}
+
+				return nil
+			})
+
+			configFileService.EXPECT().Reader().Times(1).Return(readerMock, nil)
+
+			removeOrg := conf.Organizations[0]
+			conf.Organizations.Remove(removeOrg)
+
+			configFileService.EXPECT().Writer(conf).Times(1).Return("", nil)
+
+			err := configService.DeleteOrganization(removeOrg)
+
+			Expect(err).To(BeNil())
+
+		})
+
+	})
+
+	Describe("OrganizationStructTest", func() {
+
+		organizationAdded := gofakeit.Company()
+		organizationDeleted := gofakeit.Company()
+
+		It("should add given organization", func() {
+			organizations := Organizations{organizationDeleted, gofakeit.Company()}
+
+			organizations.Add(organizationAdded)
+
+			Expect(len(organizations)).To(Equal(3))
+			Expect(organizations[2]).To(Equal(organizationAdded))
+		})
+
+		It("should remove given organization", func() {
+			organizations := Organizations{organizationDeleted, gofakeit.Company()}
+
+			organizations.Remove(organizationDeleted)
+
+			flag := false
+			for _, v := range organizations {
+				if v == organizationDeleted {
+					flag = true
+				}
+			}
+			Expect(len(organizations)).To(Equal(1))
+
+			Expect(flag).To(Equal(false))
+		})
+
+		It("should exists return true", func() {
+			organizations := Organizations{organizationAdded, gofakeit.Company()}
+
+			Expect(organizations.Exists(organizationAdded)).To(Equal(true))
+		})
+
+		It("should exists return false", func() {
+			organizations := Organizations{organizationDeleted, gofakeit.Company()}
+
+			organizations.Remove(organizationDeleted)
+
+			Expect(organizations.Exists(organizationDeleted)).To(Equal(false))
+		})
 	})
 })
