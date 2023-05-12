@@ -25,12 +25,39 @@ type Service interface {
 
 	// AddOrganization adds the new organization to the configuration.
 	AddOrganization(org string) (bool, error)
+
+	// DeleteOrganization deletes the selected organization.
+	DeleteOrganization(org string) error
+}
+
+type Organizations []string
+
+func (a *Organizations) Add(val string) {
+	*a = append(*a, val)
+}
+
+func (a *Organizations) Remove(val string) {
+	for i, v := range *a {
+		if v == val {
+			*a = append((*a)[:i], (*a)[i+1:]...)
+			break
+		}
+	}
+}
+
+func (a *Organizations) Exists(val string) bool {
+	for _, v := range *a {
+		if v == val {
+			return true
+		}
+	}
+	return false
 }
 
 type Config struct {
-	APIKey              string   `json:"key"`
-	DefaultOrganization string   `json:"org"`
-	Organizations       []string `json:"orgs"`
+	APIKey              string        `json:"key"`
+	DefaultOrganization string        `json:"org"`
+	Organizations       Organizations `json:"orgs"`
 }
 
 type config struct {
@@ -122,14 +149,10 @@ func (c *config) AddOrganization(org string) (bool, error) {
 		return flag, decodeError(err)
 	}
 
-	for _, v := range conf.Organizations {
-		if v == org {
-			flag = true
-		}
-	}
+	flag = conf.Organizations.Exists(org)
 
 	if !flag {
-		conf.Organizations = append(conf.Organizations, org)
+		conf.Organizations.Add(org)
 
 		if _, err := c.cfile.Writer(conf); err != nil {
 			return false, writerError(err)
@@ -137,6 +160,28 @@ func (c *config) AddOrganization(org string) (bool, error) {
 	}
 
 	return flag, nil
+}
+
+func (c *config) DeleteOrganization(org string) error {
+	result, err := c.cfile.Reader()
+
+	if err != nil {
+		return readerError(err)
+	}
+
+	conf := Config{}
+
+	if err = result.Decode(&conf); err != nil {
+		return decodeError(err)
+	}
+
+	conf.Organizations.Remove(org)
+
+	if _, err := c.cfile.Writer(conf); err != nil {
+		return writerError(err)
+	}
+
+	return nil
 }
 
 func writerError(e error) error {

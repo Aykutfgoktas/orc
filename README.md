@@ -31,6 +31,7 @@ Without using with any flag, it will list the repositories from the default orga
 |    -a    |   -add    |     add the organization     |
 |    -l    |  --list   |    list the organization     |
 |    -s    |   --set   | set the default organization |
+|    -r    |   --remove   | remove the selected organization |
 
 Configuration will be stored in `$HOME/.orc.conf.json` file.
 
